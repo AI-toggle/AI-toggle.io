@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI工具导航</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Arial', sans-serif;
+            background-color: #000;
+            color: #fff;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* 顶部视频展示区样式 */
+        .hero-section {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        .hero-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.8));
+        }
+
+        .hero-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            z-index: 2;
+            width: 80%;
+            max-width: 800px;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-content p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .hero-button {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #fff;
+            color: #000;
+            text-decoration: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .hero-button:hover {
+            background: transparent;
+            border-color: white;
+            color: white;
+        }
+
+        /* 工具导航样式 */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .header h1 {
+            color: #fff;
+            margin-bottom: 20px;
+            font-size: 3rem;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.2rem;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.7);
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .tab.active {
+            background: #fff;
+            color: #000;
+            font-weight: 600;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .tool-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            min-height: 180px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tool-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .tool-card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .tool-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            margin-right: 15px;
+            object-fit: contain;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 8px;
+        }
+
+        .tool-card h3 {
+            color: #fff;
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .tool-card p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+            font-size: 1rem;
+            padding-right: 40px;
+            flex-grow: 1;
+        }
+
+        .tool-link {
+            position: absolute;
+            bottom: 25px;
+            right: 25px;
+            padding: 8px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .tool-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .category {
+            display: none;
+        }
+
+        .category.active {
+            display: block;
+        }
+
+        /* 移动端分类菜单 */
+        .mobile-filter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            display: none;
+        }
+
+        .filter-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px;
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            width: 40px;
+            height: 40px;
+        }
+
+        .filter-button svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .filter-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 10px;
+            width: 200px;
+            backdrop-filter: blur(10px);
+            display: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .filter-menu.active {
+            display: block;
+        }
+
+        .filter-menu .tab {
+            display: block;
+            width: 100%;
+            text-align: left;
+            margin-bottom: 8px;
+            padding: 8px 15px;
+        }
+
+        .filter-menu .tab:last-child {
+            margin-bottom: 0;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                height: 70vh;
+            }
+            
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-content p {
+                font-size: 1.2rem;
+            }
+
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .tabs {
+                display: none;
+            }
+
+            .mobile-filter {
+                display: block;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+</head>
+<body>
+    <!-- 移动端分类筛选按钮 -->
+    <div class="mobile-filter">
+        <button class="filter-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+        <div class="filter-menu">
+            <button class="tab active" data-category="all">全部</button>
+            <button class="tab" data-category="chat">聊天对话</button>
+            <button class="tab" data-category="image">图像创作</button>
+            <button class="tab" data-category="video">视频制作</button>
+            <button class="tab" data-category="code">编程开发</button>
+            <button class="tab" data-category="audio">音频处理</button>
+            <button class="tab" data-category="office">办公效率</button>
+            <button class="tab" data-category="design">设计工具</button>
+            <button class="tab" data-category="research">研究分析</button>
+        </div>
+    </div>
+
+    <!-- 顶部视频展示区 -->
+    <section class="hero-section">
+        <video id="heroVideo" class="hero-video" autoplay muted loop playsinline preload="auto">
+            <source src="images/Runway Tools for human imagination .mp4" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>AI工具导航</h1>
+            <p>探索改变未来的AI工具</p>
+            <a href="#tools" class="hero-button">浏览工具</a>
+        </div>
+    </section>
+
+    <!-- 工具导航部分 -->
+    <div id="tools" class="container">
+        <div class="header">
+            <h1>AI工具导航</h1>
+            <p>发现和探索最新的AI工具</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" data-category="all">全部</button>
+            <button class="tab" data-category="chat">聊天对话</button>
+            <button class="tab" data-category="image">图像创作</button>
+            <button class="tab" data-category="video">视频制作</button>
+            <button class="tab" data-category="code">编程开发</button>
+            <button class="tab" data-category="audio">音频处理</button>
+            <button class="tab" data-category="office">办公效率</button>
+            <button class="tab" data-category="design">设计工具</button>
+            <button class="tab" data-category="research">研究分析</button>
+        </div>
+
+        <div class="tools-grid">
+            <!-- 聊天对话类 -->
+            <div class="tool-card" data-categories="chat">
+                <div class="tool-card-header">
+                    <img src="images/chatgpt-logo.svg" alt="ChatGPT" class="tool-icon">
+                    <h3>ChatGPT</h3>
+                </div>
+                <p>OpenAI开发的大语言模型，支持自然对话和多种任务</p>
+                <a href="https://chat.openai.com" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="chat">
+                <div class="tool-card-header">
+                    <img src="images/anthropic-logo.svg" alt="Claude" class="tool-icon">
+                    <h3>Claude</h3>
+                </div>
+                <p>Anthropic开发的AI助手，擅长写作和分析</p>
+                <a href="https://claude.ai" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="chat">
+                <div class="tool-card-header">
+                    <img src="images/bard-logo.png" alt="Bard" class="tool-icon">
+                    <h3>Bard</h3>
+                </div>
+                <p>Google开发的AI助手，支持多语言对话</p>
+                <a href="https://bard.google.com" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="chat">
+                <div class="tool-card-header">
+                    <img src="images/baidu-logo.png" alt="文心一言" class="tool-icon">
+                    <h3>文心一言</h3>
+                </div>
+                <p>百度开发的AI助手，中文理解能力强</p>
+                <a href="https://yiyan.baidu.com" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="chat">
+                <div class="tool-card-header">
+                    <img src="images/iflytek-logo.png" alt="讯飞星火" class="tool-icon">
+                    <h3>讯飞星火</h3>
+                </div>
+                <p>科大讯飞开发的AI助手，中文交互体验好</p>
+                <a href="https://xinghuo.xfyun.cn" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="chat">
+                <div class="tool-card-header">
+                    <img src="images/character-ai-logo.png" alt="Character.AI" class="tool-icon">
+                    <h3>Character.AI</h3>
+                </div>
+                <p>可以创建和与AI角色对话的平台</p>
+                <a href="https://character.ai" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <!-- 图像创作类 -->
+            <div class="tool-card" data-categories="image">
+                <div class="tool-card-header">
+                    <img src="images/midjourney-logo.png" alt="Midjourney" class="tool-icon">
+                    <h3>Midjourney</h3>
+                </div>
+                <p>强大的AI绘画工具，通过Discord使用</p>
+                <a href="https://www.midjourney.com" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="image">
+                <div class="tool-card-header">
+                    <img src="images/dalle-logo.png" alt="DALL·E 3" class="tool-icon">
+                    <h3>DALL·E 3</h3>
+                </div>
+                <p>OpenAI开发的AI图像生成工具</p>
+                <a href="https://labs.openai.com" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="image">
+                <div class="tool-card-header">
+                    <img src="images/stability-ai-logo.png" alt="Stable Diffusion" class="tool-icon">
+                    <h3>Stable Diffusion</h3>
+                </div>
+                <p>开源的AI图像生成模型</p>
+                <a href="https://stability.ai" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="image">
+                <div class="tool-card-header">
+                    <img src="images/canva-logo.png" alt="Canva AI" class="tool-icon">
+                    <h3>Canva AI</h3>
+                </div>
+                <p>Canva推出的AI设计工具</p>
+                <a href="https://www.canva.com/ai" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="image">
+                <div class="tool-card-header">
+                    <img src="images/adobe-logo.png" alt="Adobe Firefly" class="tool-icon">
+                    <h3>Adobe Firefly</h3>
+                </div>
+                <p>Adobe的AI创意套件</p>
+                <a href="https://firefly.adobe.com" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="image">
+                <div class="tool-card-header">
+                    <img src="images/leonardo-logo.jpg" alt="Leonardo.ai" class="tool-icon">
+                    <h3>Leonardo.ai</h3>
+                </div>
+                <p>专业的AI图像生成平台</p>
+                <a href="https://leonardo.ai" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <!-- 视频制作类 -->
+            <div class="tool-card" data-categories="video">
+                <div class="tool-card-header">
+                    <img src="images/runway-logo.png" alt="Runway" class="tool-icon">
+                    <h3>Runway</h3>
+                </div>
+                <p>AI视频编辑和生成工具</p>
+                <a href="https://runway.ml" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="video">
+                <div class="tool-card-header">
+                    <img src="images/d-id-logo.png" alt="D-ID" class="tool-icon">
+                    <h3>D-ID</h3>
+                </div>
+                <p>AI数字人视频生成工具</p>
+                <a href="https://www.d-id.com" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="video">
+                <div class="tool-card-header">
+                    <img src="images/synthesia-logo.png" alt="Synthesia" class="tool-icon">
+                    <h3>Synthesia</h3>
+                </div>
+                <p>AI视频生成平台，支持多语言</p>
+                <a href="https://www.synthesia.io" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="video">
+                <div class="tool-card-header">
+                    <img src="images/descript-logo.png" alt="Descript" class="tool-icon">
+                    <h3>Descript</h3>
+                </div>
+                <p>AI视频编辑和转录工具</p>
+                <a href="https://www.descript.com" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="video">
+                <div class="tool-card-header">
+                    <img src="images/heygen-logo.png" alt="HeyGen" class="tool-icon">
+                    <h3>HeyGen</h3>
+                </div>
+                <p>AI数字人视频制作平台</p>
+                <a href="https://www.heygen.com" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="video">
+                <div class="tool-card-header">
+                    <img src="images/kapwing-logo.png" alt="Kapwing" class="tool-icon">
+                    <h3>Kapwing</h3>
+                </div>
+                <p>在线AI视频编辑工具</p>
+                <a href="https://www.kapwing.com" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <!-- 编程开发类 -->
+            <div class="tool-card" data-categories="code">
+                <div class="tool-card-header">
+                    <img src="images/github-logo.png" alt="GitHub Copilot" class="tool-icon">
+                    <h3>GitHub Copilot</h3>
+                </div>
+                <p>AI编程助手，支持多种编程语言</p>
+                <a href="https://github.com/features/copilot" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="code">
+                <div class="tool-card-header">
+                    <img src="images/cursor-logo.png" alt="Cursor" class="tool-icon">
+                    <h3>Cursor</h3>
+                </div>
+                <p>基于AI的代码编辑器</p>
+                <a href="https://cursor.sh" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="code">
+                <div class="tool-card-header">
+                    <img src="images/aws-logo.png" alt="Amazon CodeWhisperer" class="tool-icon">
+                    <h3>Amazon CodeWhisperer</h3>
+                </div>
+                <p>亚马逊的AI代码助手</p>
+                <a href="https://aws.amazon.com/codewhisperer" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="code">
+                <div class="tool-card-header">
+                    <img src="images/tabnine-logo.png" alt="Tabnine" class="tool-icon">
+                    <h3>Tabnine</h3>
+                </div>
+                <p>AI代码补全工具</p>
+                <a href="https://www.tabnine.com" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="code">
+                <div class="tool-card-header">
+                    <img src="images/replit-logo.png" alt="Replit Ghost" class="tool-icon">
+                    <h3>Replit Ghost</h3>
+                </div>
+                <p>在线IDE中的AI编程助手</p>
+                <a href="https://replit.com/ghost" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="code">
+                <div class="tool-card-header">
+                    <img src="images/codeium-logo.png" alt="Codeium" class="tool-icon">
+                    <h3>Codeium</h3>
+                </div>
+                <p>免费的AI代码助手</p>
+                <a href="https://codeium.com" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <!-- 音频处理类 -->
+            <div class="tool-card" data-categories="audio">
+                <div class="tool-card-header">
+                    <img src="images/mubert-logo.png" alt="Mubert" class="tool-icon">
+                    <h3>Mubert</h3>
+                </div>
+                <p>AI音乐生成工具</p>
+                <a href="https://mubert.com" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="audio">
+                <div class="tool-card-header">
+                    <img src="images/elevenlabs-logo.png" alt="ElevenLabs" class="tool-icon">
+                    <h3>ElevenLabs</h3>
+                </div>
+                <p>AI语音合成工具</p>
+                <a href="https://elevenlabs.io" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="audio">
+                <div class="tool-card-header">
+                    <img src="images/soundraw-logo.png" alt="Soundraw" class="tool-icon">
+                    <h3>Soundraw</h3>
+                </div>
+                <p>AI音乐创作平台</p>
+                <a href="https://soundraw.io" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="audio">
+                <div class="tool-card-header">
+                    <img src="images/descript-logo.png" alt="Descript Audio" class="tool-icon">
+                    <h3>Descript Audio</h3>
+                </div>
+                <p>AI音频编辑工具</p>
+                <a href="https://www.descript.com/audio" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="audio">
+                <div class="tool-card-header">
+                    <img src="images/lalal-logo.png" alt="Lalal.ai" class="tool-icon">
+                    <h3>Lalal.ai</h3>
+                </div>
+                <p>AI音频分离工具</p>
+                <a href="https://www.lalal.ai" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="audio">
+                <div class="tool-card-header">
+                    <img src="images/riffusion-logo.png" alt="Riffusion" class="tool-icon">
+                    <h3>Riffusion</h3>
+                </div>
+                <p>AI音乐生成和编辑工具</p>
+                <a href="https://www.riffusion.com" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <!-- 办公效率类 -->
+            <div class="tool-card" data-categories="office">
+                <div class="tool-card-header">
+                    <img src="images/notion-logo.png" alt="Notion AI" class="tool-icon">
+                    <h3>Notion AI</h3>
+                </div>
+                <p>Notion的AI写作助手</p>
+                <a href="https://www.notion.so/product/ai" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="office">
+                <div class="tool-card-header">
+                    <img src="images/microsoft-logo.png" alt="Microsoft Copilot" class="tool-icon">
+                    <h3>Microsoft Copilot</h3>
+                </div>
+                <p>微软Office套件的AI助手</p>
+                <a href="https://www.microsoft.com/copilot" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="office">
+                <div class="tool-card-header">
+                    <img src="images/grammarly-logo.png" alt="Grammarly" class="tool-icon">
+                    <h3>Grammarly</h3>
+                </div>
+                <p>AI写作和语法检查工具</p>
+                <a href="https://www.grammarly.com" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="office">
+                <div class="tool-card-header">
+                    <img src="images/otter-logo.png" alt="Otter.ai" class="tool-icon">
+                    <h3>Otter.ai</h3>
+                </div>
+                <p>AI会议记录和转录工具</p>
+                <a href="https://otter.ai" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="office">
+                <div class="tool-card-header">
+                    <img src="images/fireflies-logo.png" alt="Fireflies.ai" class="tool-icon">
+                    <h3>Fireflies.ai</h3>
+                </div>
+                <p>AI会议助手和记录工具</p>
+                <a href="https://fireflies.ai" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="office">
+                <div class="tool-card-header">
+                    <img src="images/beautiful-logo.png" alt="Beautiful.ai" class="tool-icon">
+                    <h3>Beautiful.ai</h3>
+                </div>
+                <p>AI驱动的演示文稿工具</p>
+                <a href="https://www.beautiful.ai" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <!-- 设计工具类 -->
+            <div class="tool-card" data-categories="design">
+                <div class="tool-card-header">
+                    <img src="images/figma-logo.png" alt="Figma AI" class="tool-icon">
+                    <h3>Figma AI</h3>
+                </div>
+                <p>Figma的AI设计助手</p>
+                <a href="https://www.figma.com/ai" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="design">
+                <div class="tool-card-header">
+                    <img src="images/uizard-logo.png" alt="Uizard" class="tool-icon">
+                    <h3>Uizard</h3>
+                </div>
+                <p>AI驱动的UI设计工具</p>
+                <a href="https://uizard.io" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="design">
+                <div class="tool-card-header">
+                    <img src="images/looka-logo.png" alt="Looka" class="tool-icon">
+                    <h3>Looka</h3>
+                </div>
+                <p>AI标志设计工具</p>
+                <a href="https://looka.com" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="design">
+                <div class="tool-card-header">
+                    <img src="images/khroma-logo.png" alt="Khroma" class="tool-icon">
+                    <h3>Khroma</h3>
+                </div>
+                <p>AI配色方案生成器</p>
+                <a href="https://www.khroma.co" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="design">
+                <div class="tool-card-header">
+                    <img src="images/fronty-logo.png" alt="Fronty" class="tool-icon">
+                    <h3>Fronty</h3>
+                </div>
+                <p>AI网页设计工具</p>
+                <a href="https://fronty.com" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="design">
+                <div class="tool-card-header">
+                    <img src="images/magician-logo.png" alt="Magician" class="tool-icon">
+                    <h3>Magician</h3>
+                </div>
+                <p>Figma的AI设计插件</p>
+                <a href="https://www.magician.design" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <!-- 研究分析类 -->
+            <div class="tool-card" data-categories="research">
+                <div class="tool-card-header">
+                    <img src="images/elicit-logo.png" alt="Elicit" class="tool-icon">
+                    <h3>Elicit</h3>
+                </div>
+                <p>AI研究助手</p>
+                <a href="https://elicit.org" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="research">
+                <div class="tool-card-header">
+                    <img src="images/consensus-logo.png" alt="Consensus" class="tool-icon">
+                    <h3>Consensus</h3>
+                </div>
+                <p>AI驱动的研究搜索引擎</p>
+                <a href="https://consensus.app" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="research">
+                <div class="tool-card-header">
+                    <img src="images/scholarcy-logo.png" alt="Scholarcy" class="tool-icon">
+                    <h3>Scholarcy</h3>
+                </div>
+                <p>AI文献综述工具</p>
+                <a href="https://www.scholarcy.com" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="research">
+                <div class="tool-card-header">
+                    <img src="images/scite-logo.png" alt="Scite" class="tool-icon">
+                    <h3>Scite</h3>
+                </div>
+                <p>AI驱动的文献引用分析工具</p>
+                <a href="https://scite.ai" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="research">
+                <div class="tool-card-header">
+                    <img src="images/connected-papers-logo.png" alt="Connected Papers" class="tool-icon">
+                    <h3>Connected Papers</h3>
+                </div>
+                <p>AI文献关联分析工具</p>
+                <a href="https://www.connectedpapers.com" class="tool-link" target="_blank">访问</a>
+            </div>
+
+            <div class="tool-card" data-categories="research">
+                <div class="tool-card-header">
+                    <img src="images/research-rabbit-logo.png" alt="Research Rabbit" class="tool-icon">
+                    <h3>Research Rabbit</h3>
+                </div>
+                <p>AI研究文献管理工具</p>
+                <a href="https://www.researchrabbit.ai" class="tool-link" target="_blank">访问</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 视频背景切换
+            const videos = [
+                'images/Runway Tools for human imagination .mp4',
+                'https://assets.mixkit.co/videos/preview/mixkit-abstract-technology-network-connections-99786-large.mp4',
+                'https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-data-flow-99785-large.mp4',
+                'https://assets.mixkit.co/videos/preview/mixkit-abstract-technology-network-connections-99786-large.mp4',
+                'https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-data-flow-99785-large.mp4'
+            ];
+            
+            let currentVideoIndex = 0;
+            const videoElement = document.getElementById('heroVideo');
+            
+            // 确保视频自动播放
+            function ensureAutoplay() {
+                const playPromise = videoElement.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(_ => {
+                        // 自动播放成功
+                        console.log("视频自动播放成功");
+                    })
+                    .catch(error => {
+                        // 自动播放失败，尝试静音播放
+                        console.log("自动播放失败，尝试静音播放");
+                        videoElement.muted = true;
+                        videoElement.play();
+                    });
+                }
+            }
+            
+            // 视频加载错误处理
+            videoElement.addEventListener('error', function(e) {
+                console.error('视频加载错误:', e);
+                // 尝试加载下一个视频
+                changeVideo();
+            });
+            
+            function changeVideo() {
+                currentVideoIndex = (currentVideoIndex + 1) % videos.length;
+                videoElement.src = videos[currentVideoIndex];
+                // 确保新视频也能自动播放
+                ensureAutoplay();
+            }
+
+            // 初始确保视频播放
+            ensureAutoplay();
+            
+            // 每15秒切换一次视频
+            setInterval(changeVideo, 15000);
+
+            // 平滑滚动
+            document.querySelector('.hero-button').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector('#tools').scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+
+            // 移动端分类筛选菜单
+            const filterButton = document.querySelector('.filter-button');
+            const filterMenu = document.querySelector('.filter-menu');
+            
+            filterButton.addEventListener('click', function() {
+                filterMenu.classList.toggle('active');
+            });
+            
+            // 点击页面其他地方关闭菜单
+            document.addEventListener('click', function(e) {
+                if (!filterButton.contains(e.target) && !filterMenu.contains(e.target)) {
+                    filterMenu.classList.remove('active');
+                }
+            });
+
+            // 标签切换脚本
+            const tabs = document.querySelectorAll('.tab');
+            const toolCards = document.querySelectorAll('.tool-card');
+
+            function filterByCategory(category) {
+                toolCards.forEach(card => {
+                    if (category === 'all') {
+                        card.style.display = 'block';
+                    } else {
+                        const cardCategories = card.dataset.categories.split(' ');
+                        if (cardCategories.includes(category)) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    }
+                });
+                
+                // 更新所有标签的状态
+                tabs.forEach(t => {
+                    if (t.dataset.category === category) {
+                        t.classList.add('active');
+                    } else {
+                        t.classList.remove('active');
+                    }
+                });
+            }
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const category = tab.dataset.category;
+                    filterByCategory(category);
+                    
+                    // 在移动端，选择后关闭菜单
+                    if (window.innerWidth <= 768) {
+                        filterMenu.classList.remove('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html> 
